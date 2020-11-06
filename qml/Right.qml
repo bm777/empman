@@ -43,14 +43,14 @@ Item {
         }
 
     }
-    Rectangle {
-        width: root.width * 1 //(1 - 0.87)
-        height: 2
-        color: "#95afc0"
-        radius: 10
-        y: _system_right.height * 0.08
-        x: 0 //root.width * 0.87
-    }
+//    Rectangle {
+//        width: root.width * 1 //(1 - 0.87)
+//        height: 2
+//        color: "#95afc0"
+//        radius: 10
+//        y: _system_right.height * 0.08
+//        x: 0 //root.width * 0.87
+//    }
 
     // ===========================[ 1 ]========================================
     Item {

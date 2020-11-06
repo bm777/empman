@@ -13,37 +13,31 @@ Item {
     height: root.height * 1
     property string main_: "MANAGEMENT DES EMPLOYES"
 
-    Rectangle {
-            id: _system_left
-            width: root.width * 0.87
-            height: root.height
-            color: "white"
-            x: 0
+// =========================employe==========================================================
 
-        }
-    Item {
-        Rectangle {
-            width: root.width * 0.87
-            height: root.height * 0.08
-            color: "#880000ff"
+    Employe {
+        y: 50
+        id: user
 
-            Text {
-                id: name
-                text: main_
-                anchors.centerIn: parent
-                color: "white"
-                font.pointSize: 18
-            }
+        visible: true
+        headerModel: [
+            {text: "Noms", width: 2/7},
+            {text: "Téléphone", width: 1/7},
+            {text: "Naissance", width: 1/7},
+            {text: "Ville", width: 1/7},
+            {text: "c.n.i", width: 1/7},
+            {text: "Salaire fixe", width: 1/7},
+        ]
 
-            Rectangle {
-
-            }
-        }
-
+        dataModel: [
+            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
+            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
+            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
+            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
+            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
+        ]
+        onClicked: print('onClicked', row, JSON.stringify(rowData))
     }
-
-
-
 
 
 }
