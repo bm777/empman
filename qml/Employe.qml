@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Controls 2.15
 
 Item { // size controlled by width
     id: root_user
@@ -15,7 +16,7 @@ Item { // size controlled by width
     signal clicked(int row, variant rowData);  //onClicked: print('onClicked', row, JSON.stringify(rowData))
 
 // private
-    width: root.width * 0.65;  height: 200
+    width: root.width * 0.65;  height: 600
 //    Rectangle {
 //        color: "red"
 //        width: root.width * 0.65
@@ -112,8 +113,131 @@ Item { // size controlled by width
 
         ScrollBar{}
 //        ScrollBar{}
-    }
-    TextInput {
 
+    }
+    // ========================name====================================================
+    TextField {
+        id: input_name
+        placeholderText: "Names"
+        x: 0
+        y: root_user.height
+        background: Rectangle {
+             implicitWidth: header.width * 2 / 7
+             implicitHeight: 40
+             radius: 3
+             color: input_name.enabled ? "transparent" : "#780000ff"
+             border.color: input_name.enabled ? "#780000ff" : "transparent"
+        }
+    }
+
+    // ========================telephone====================================================
+    TextField {
+        id: input_tel
+        placeholderText: "Téléphone"
+        x: input_name.width
+        y: root_user.height
+        background: Rectangle {
+             implicitWidth: header.width * 1 / 7
+             implicitHeight: 40
+             radius: 3
+             color: input_name.enabled ? "transparent" : "#780000ff"
+             border.color: input_name.enabled ? "#780000ff" : "transparent"
+        }
+    }
+
+    // ========================naissance====================================================
+    TextField {
+        id: input_nais
+        placeholderText: "Naissance"
+        x: input_tel.x + input_tel.width
+        y: root_user.height
+        background: Rectangle {
+             implicitWidth: header.width * 1 / 7
+             implicitHeight: 40
+             radius: 3
+             color: input_name.enabled ? "transparent" : "#780000ff"
+             border.color: input_name.enabled ? "#780000ff" : "transparent"
+        }
+    }
+
+    // ========================ville====================================================
+    TextField {
+        id: input_ville
+        placeholderText: "Ville"
+        x: input_nais.x + input_nais.width
+        y: root_user.height
+        background: Rectangle {
+             implicitWidth: header.width * 1 / 7
+             implicitHeight: 40
+             radius: 3
+             color: input_name.enabled ? "transparent" : "#780000ff"
+             border.color: input_name.enabled ? "#780000ff" : "transparent"
+        }
+    }
+
+    // ========================cni====================================================
+    TextField {
+        id: input_cni
+        placeholderText: "C.N.I"
+        x: input_ville.x + input_ville.width
+        y: root_user.height
+        background: Rectangle {
+             implicitWidth: header.width * 1 / 7
+             implicitHeight: 40
+             radius: 3
+             color: input_name.enabled ? "transparent" : "#780000ff"
+             border.color: input_name.enabled ? "#780000ff" : "transparent"
+        }
+    }
+
+    // ========================salaire====================================================
+    TextField {
+        id: input_salaire
+        visible: true
+        placeholderText: "Salaire"
+        x: input_cni.x + input_cni.width
+        y: root_user.height
+        background: Rectangle {
+             implicitWidth: header.width * 1 / 7
+             implicitHeight: 40
+             radius: 3
+             color: input_name.enabled ? "transparent" : "#780000ff"
+             border.color: input_name.enabled ? "#780000ff" : "transparent"
+        }
+    }
+
+    // ============================ComboBox=================================================
+    ComboBox {
+        id: combo
+        x: input_ville.x  - 30//+ input_salaire.width
+        y: root_user.height + input_salaire.height * 5 / 3
+        model: ["Créer", "Mettre à jour", "Supprimer"]
+
+
+
+    }
+
+    // ============================confirmer=================================================
+    Button {
+        id: confirmer
+        x: input_cni.x  + 50//+ input_salaire.width
+        y: root_user.height + input_salaire.height * 5 / 3 + 3
+        text: "Confirmer"
+        contentItem: Text {
+            text: confirmer.text
+            color: confirmer.down ? "#17a81a" : "2c2c54"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            font.pointSize: 15
+        }
+
+        background: Rectangle {
+            color: "white"
+            border.color: "#780000ff"
+            width: parent.width + 10
+            height: parent.height
+            radius: 4
+        }
     }
 }

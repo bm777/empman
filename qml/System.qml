@@ -19,7 +19,7 @@ Item {
         y: 50
         id: user
 
-        visible: true
+        visible: false
         headerModel: [
             {text: "Noms", width: 2/7},
             {text: "Téléphone", width: 1/7},
@@ -37,6 +37,9 @@ Item {
             ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
         ]
         onClicked: print('onClicked', row, JSON.stringify(rowData))
+    }
+    Right {
+        visible: true
     }
 
 

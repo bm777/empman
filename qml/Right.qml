@@ -2,9 +2,13 @@ import QtQuick 2.15
 
 Item {
     property string state_home: "OutMouse"
+    property string state_h: ""
     property string state_camera: "OutMouse"
+    property string state_c: ""
     property string state_person: "OutMouse"
+    property string state_p: ""
     property string state_stat: "OutMouse"
+    property string state_s: ""
 
     property string string_menu1: "Employés"
     property string string_source1: "file:/home/bm7/eyeloop/images/dashboard.png"
@@ -63,7 +67,17 @@ Item {
         // =============================
         Rectangle {
             id: menu_dashboard
-            color: state_home === "InMouse" ? "#1e3799" : "transparent"
+            color: {
+
+                if((state_home === "OutMouse" ) && (state_h === "")){
+                    return "transparent"
+                } else if(state_home === "InMouse"){
+                    return "#6c5ce7"
+                } else if(state_h === "Clicked") {
+                    return "#806c5ce7"
+                }
+            }
+
             width: root.width * (1 - 0.87)
             height: 100
             y: 70
@@ -74,12 +88,21 @@ Item {
                 onEntered:{
                     state_home = "InMouse";
                 }
+                onClicked: {
+                    state_h = "Clicked"
+                    state_c = ""
+                    state_p = ""
+                    state_s = ""
+                    user.visible = true
+                }
+
                 onExited: {
                     if(state_home === "OutMouse") {
                         state_home = "InMouse"
                     }
                     if(state_home !== "OutMouse") {
                         state_home = "OutMouse"
+//                        menu_dashboard.color = "transparent"
                     }
                 }
             }
@@ -107,7 +130,16 @@ Item {
         // =============================
         Rectangle {
             id: menu_camera
-            color: state_camera === "InMouse" ? "#1e3799" : "transparent"
+            color: {
+
+                if((state_camera === "OutMouse" ) && (state_c === "")){
+                    return "transparent"
+                } else if(state_camera === "InMouse"){
+                    return "#6c5ce7"
+                } else if(state_c === "Clicked") {
+                    return "#806c5ce7"
+                }
+            }
             width: root.width * (1 - 0.87)
             height: 100
             y: 70
@@ -118,6 +150,14 @@ Item {
                 onEntered:{
                     state_camera = "InMouse";
                 }
+                onClicked: {
+                    state_h = ""
+                    state_c = "Clicked"
+                    state_p = ""
+                    state_s = ""
+                    user.visible = false
+                }
+
                 onExited: {
                     if(state_camera === "OutMouse") {
                         state_camera = "InMouse"
@@ -151,7 +191,16 @@ Item {
         // =============================
         Rectangle {
             id: menu_person                                             //
-            color: state_person === "InMouse" ? "#1e3799" : "transparent"
+            color: {
+
+                if((state_person === "OutMouse" ) && (state_p === "")){
+                    return "transparent"
+                } else if(state_person === "InMouse"){
+                    return "#6c5ce7"
+                } else if(state_p === "Clicked") {
+                    return "#806c5ce7"
+                }
+            }
             width: root.width * (1 - 0.87)
             height: 100
             y: 70
@@ -162,6 +211,15 @@ Item {
                 onEntered: {
                     state_person = "InMouse";                           //
                 }
+                onClicked: {
+                    state_h = ""
+                    state_c = ""
+                    state_p = "Clicked"
+                    state_s = ""
+
+                    user.visible = false
+                }
+
                 onExited: {
                     if(state_person === "OutMouse") {                   //
                         state_person = "InMouse"                        //
@@ -195,7 +253,16 @@ Item {
         // =============================
         Rectangle {
             id: menu_stat                                             //
-            color: state_stat === "InMouse" ? "#1e3799" : "transparent"
+            color: {
+
+                if((state_stat === "OutMouse" ) && (state_s === "")){
+                    return "transparent"
+                } else if(state_stat === "InMouse"){
+                    return "#6c5ce7"
+                } else if(state_s === "Clicked") {
+                    return "#806c5ce7"
+                }
+            }
             width: root.width * (1 - 0.87)
             height: 100
             y: 70
@@ -206,6 +273,15 @@ Item {
                 onEntered: {
                     state_stat = "InMouse";                           //
                 }
+                onClicked: {
+                    state_h = ""
+                    state_c = ""
+                    state_p = ""
+                    state_s = "Clicked"
+
+                    user.visible = false
+                }
+
                 onExited: {
                     if(state_stat === "OutMouse") {                   //
                         state_stat = "InMouse"                        //
