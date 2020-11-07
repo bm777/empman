@@ -93,7 +93,9 @@ Item {
                     state_c = ""
                     state_p = ""
                     state_s = ""
+
                     user.visible = true
+                    bareme.visible = false
                 }
 
                 onExited: {
@@ -155,7 +157,9 @@ Item {
                     state_c = "Clicked"
                     state_p = ""
                     state_s = ""
+
                     user.visible = false
+                    bareme.visible = true
                 }
 
                 onExited: {
@@ -218,6 +222,7 @@ Item {
                     state_s = ""
 
                     user.visible = false
+                    bareme.visible = false
                 }
 
                 onExited: {
@@ -280,6 +285,7 @@ Item {
                     state_s = "Clicked"
 
                     user.visible = false
+                    bareme.visible = false
                 }
 
                 onExited: {

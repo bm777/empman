@@ -13,7 +13,7 @@ Item {
     height: root.height * 1
     property string main_: "MANAGEMENT DES EMPLOYES"
 
-// =========================employe==========================================================
+    // =========================employe==========================================================
 
     Employe {
         y: 50
@@ -38,6 +38,29 @@ Item {
         ]
         onClicked: print('onClicked', row, JSON.stringify(rowData))
     }
+
+    // =========================bareme==========================================================
+    Bareme {
+        id: bareme
+        y: 50
+
+        visible: false
+        headerModel: [
+            {text: "Operation", width: 5/7},
+            {text: "Valeur unitaire", width: 2/7},
+        ]
+
+        dataModel: [
+            ['COUPE NGOUMOU',  '30'],
+            ['COUPE BAMENDA',  '30'],
+            ['COUPE EKOPTENTE',  '50'],
+            ['COUPE AKONO',  '50'],
+            ['RABATTAGE',  '100'],
+        ]
+        onClicked: print('onClicked', row, JSON.stringify(rowData))
+
+    }
+
     Right {
         visible: true
     }
