@@ -17,12 +17,15 @@ Item { // size controlled by width
 
 // private
     width: root.width * 0.65;  height: 600
-//    Rectangle {
-//        color: "red"
-//        width: root.width * 0.65
-////        x: root.width * 0.1
-//        height: root.height
-//    }
+    Text {
+        id: point_text
+        text: "FICHE DE BAREMES DES OPERATIONS"
+        y: - 80
+        x: root_bareme.width * 0.3
+        color: "#880000ff"
+        font.pointSize: root_bareme.width * 0.023
+    }
+
 
     Rectangle {
         id: header
@@ -36,11 +39,7 @@ Item { // size controlled by width
             color: parent.color
             anchors.bottom: parent.bottom
         }
-//        Rectangle { // half height to cover bottom rounded corners
-//            width: parent.width * 0.5;  height: parent.height
-//            color: parent.color
-//            anchors.right: parent.right
-//        }
+
 
         ListView { // header
             anchors.fill: parent
@@ -87,7 +86,7 @@ Item { // size controlled by width
                         width: headerModel[index].width * root_bareme.width;  height: header.height
 
                         Text {
-                            x: 15
+                            x: 0.02 * root_bareme.width
 //                            x: root.width * 0.11
                             text: modelData
                             anchors.verticalCenter: parent.verticalCenter
@@ -102,7 +101,19 @@ Item { // size controlled by width
 
                 anchors.fill: parent
 
-                onClicked:  root_bareme.clicked(row, rowData)
+                onClicked:  {
+                    root_bareme.clicked(row, rowData)
+                    input_operation.text = rowData[0]
+                    input_val.text = rowData[1]
+
+                    var cursor = combo.currentIndex
+                    if(combo.textAt(cursor) === "Créer"){
+                        combo.incrementCurrentIndex();
+                    }
+                    if(combo.textAt(cursor) === "Supprimer"){
+                        combo.decrementCurrentIndex();
+                    }
+                }
             }
         }
         Rectangle {
@@ -130,7 +141,7 @@ Item { // size controlled by width
         }
     }
 
-    // ========================valeur====================================================
+    // ========================valeur======================================================
     TextField {
         id: input_val
         placeholderText: "Valeur Unitaire"

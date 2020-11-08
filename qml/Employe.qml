@@ -17,12 +17,14 @@ Item { // size controlled by width
 
 // private
     width: root.width * 0.65;  height: 600
-//    Rectangle {
-//        color: "red"
-//        width: root.width * 0.65
-////        x: root.width * 0.1
-//        height: root.height
-//    }
+    Text {
+        id: point_text
+        text: "FICHE DES EMPLOYES"
+        y: - 80
+        x: root_user.width * 0.3
+        color: "#880000ff"
+        font.pointSize: root_user.width * 0.023
+    }
 
     Rectangle {
         id: header
@@ -87,7 +89,7 @@ Item { // size controlled by width
                         width: headerModel[index].width * root_user.width;  height: header.height
 
                         Text {
-                            x: 15
+                            x: 0.02 * root_user.width
 //                            x: root.width * 0.11
                             text: modelData
                             anchors.verticalCenter: parent.verticalCenter
@@ -102,7 +104,24 @@ Item { // size controlled by width
 
                 anchors.fill: parent
 
-                onClicked:  root_user.clicked(row, rowData)
+                onClicked:  {
+                    root_user.clicked(row, rowData)
+                    input_name.text = rowData[0]
+                    input_tel.text = rowData[1]
+                    input_nais.text = rowData[2]
+                    input_ville.text = rowData[3]
+                    input_cni.text = rowData[4]
+                    input_salaire.text = rowData[5]
+
+                    var cursor = combo.currentIndex
+                    if(combo.textAt(cursor) === "Créer"){
+                        combo.incrementCurrentIndex();
+                    }
+                    if(combo.textAt(cursor) === "Supprimer"){
+                        combo.decrementCurrentIndex();
+                    }
+
+                }
             }
         }
         Rectangle {
@@ -206,6 +225,30 @@ Item { // size controlled by width
         }
     }
 
+    // ============================pointer=================================================
+    Button {
+        id: pointer
+        x: input_salaire.x  + input_salaire.width + 20//+ input_salaire.width
+        y: input_salaire.y + 3
+        text: "POINTER"
+        contentItem: Text {
+            text: pointer.text
+            color: pointer.down ? "#17a81a" : "#2c2c54"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            font.pointSize: 15
+        }
+
+        background: Rectangle {
+            color: "white"
+            border.color: "#780000ff"
+            width: parent.width + 10
+            height: parent.height
+            radius: 4
+        }
+    }
+
     // ============================ComboBox=================================================
     ComboBox {
         id: combo
@@ -225,7 +268,7 @@ Item { // size controlled by width
         text: "Confirmer"
         contentItem: Text {
             text: confirmer.text
-            color: confirmer.down ? "#17a81a" : "2c2c54"
+            color: confirmer.down ? "#780000ff" : "#2c2c54"
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight

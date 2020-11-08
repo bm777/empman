@@ -96,6 +96,8 @@ Item {
 
                     user.visible = true
                     bareme.visible = false
+                    pointage.visible = false
+                    recap.visible = false
                 }
 
                 onExited: {
@@ -160,6 +162,8 @@ Item {
 
                     user.visible = false
                     bareme.visible = true
+                    pointage.visible = false
+                    recap.visible = false
                 }
 
                 onExited: {
@@ -223,6 +227,8 @@ Item {
 
                     user.visible = false
                     bareme.visible = false
+                    pointage.visible = true
+                    recap.visible = false
                 }
 
                 onExited: {
@@ -286,6 +292,8 @@ Item {
 
                     user.visible = false
                     bareme.visible = false
+                    pointage.visible = false
+                    recap.visible = true
                 }
 
                 onExited: {

@@ -16,7 +16,8 @@ Item {
     // =========================employe==========================================================
 
     Employe {
-        y: 50
+        y: 100
+        x: 50
         id: user
 
         visible: false
@@ -42,7 +43,8 @@ Item {
     // =========================bareme==========================================================
     Bareme {
         id: bareme
-        y: 50
+        y: 100
+        x: 50
 
         visible: false
         headerModel: [
@@ -56,6 +58,92 @@ Item {
             ['COUPE EKOPTENTE',  '50'],
             ['COUPE AKONO',  '50'],
             ['RABATTAGE',  '100'],
+        ]
+        onClicked: print('onClicked', row, JSON.stringify(rowData))
+
+    }
+
+    Pointage {
+        id: pointage
+        y: 100
+        x: 50
+
+        visible: false
+        headerModel: [
+            {text: "N°", width: 0.5/7},
+            {text: "Date", width: 1/7},
+            {text: "Opérations", width: 1.5/7},
+            {text: "Qté", width: 0.5/7},
+            {text: "P.U", width: 1/7},
+            {text: "Montant", width: 1/7},
+            {text: "Observation", width: 1.5/7},
+        ]
+
+        dataModel: [
+            ['1',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
+            ['2',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
+            ['3',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
+            ['4',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
+            ['5',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
+            ['6',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
+            ['7',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
+            ['8',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
+            ['9',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
+            ['10',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
+            ['11',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
+            ['12',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
+            ['13',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
+            ['14',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
+            ['15',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
+            ['16',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
+            ['17',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
+            ['18',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
+            ['19',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
+            ['20',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
+            ['21',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
+            ['22',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
+            ['23',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
+            ['24',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
+            ['25',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
+            ['26',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
+            ['27',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
+            ['28',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
+            ['29',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
+            ['30',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
+        ]
+        onClicked: print('onClicked', row, JSON.stringify(rowData))
+
+    }
+    Recap {
+        id: recap
+        y: 100
+        x: 50
+
+        visible: false
+        headerModel: [
+            {text: "N°", width: 0.5/10},
+            {text: "Noms", width: 2/10},
+            {text: "Salaire F.", width: 1/10},
+            {text: "Salaire V.", width: 1/10},
+            {text: "Salaire", width: 1/10},
+            {text: "Avance", width: 1/10},
+            {text: "Autre R", width: 1/10},
+            {text: "Total R", width: 1/10},
+            {text: "Net à payer", width: 1/10},
+//            {text: "Obs", width: 0.5/10},
+        ]
+
+        dataModel: [
+            ['1',    'Jean-Claude', '35800', '0', '0', '0', "250", "250", "35550"],
+            ['2',    'Marie-Claude', '45000', '0', '0', '0', "250", "250", "44750"],
+            ['3',    'Jean-Claude', '35800', '0', '0', '0', "250", "250", "35550"],
+            ['4',    'Marie-Claude', '45000', '0', '0', '0', "250", "250", "44750"],
+            ['5',    'Jean-Claude', '35800', '0', '0', '0', "250", "250", "35550"],
+            ['6',    'Marie-Claude', '45000', '0', '0', '0', "250", "250", "44750"],
+            ['7',    'Jean-Claude', '35800', '0', '0', '0', "250", "250", "35550"],
+            ['8',    'Marie-Claude', '45000', '0', '0', '0', "250", "250", "44750"],
+
+
         ]
         onClicked: print('onClicked', row, JSON.stringify(rowData))
 
