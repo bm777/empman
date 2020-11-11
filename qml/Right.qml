@@ -94,6 +94,8 @@ Item {
                     state_p = ""
                     state_s = ""
 
+//                    bridge.load()
+
                     user.visible = true
                     bareme.visible = false
                     pointage.visible = false

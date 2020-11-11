@@ -6,6 +6,7 @@ from PySide2.QtWidgets import QApplication
 from PySide2.QtCore import QCoreApplication, QUrl
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2 import QtNetwork
+from operation import  *
 
 
 if __name__ == "__main__":
@@ -15,7 +16,10 @@ if __name__ == "__main__":
     QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     app = QApplication(sys.argv)
 
+    work = Worker()
+
     engine = QQmlApplicationEngine()
+    engine.rootContext().setContextProperty("bridge", work)
     url = QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), "qml/dashboard.qml"))
     print("Here in main function", url)
     engine.load(url)

@@ -30,13 +30,19 @@ Item {
             {text: "Salaire fixe", width: 1/7},
         ]
 
-        dataModel: [
+        dataModel: {
+
+            bridge.load("read", "employes")
+            print(bridge.data1)
+            return bridge.data1
+        }
+            /*[
             ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
             ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
             ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
             ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
             ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
-        ]
+        ]*/
         onClicked: print('onClicked', row, JSON.stringify(rowData))
     }
 
