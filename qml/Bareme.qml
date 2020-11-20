@@ -1,5 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
+import QtQuick.LocalStorage 2.15
+import "script.js" as Code
 
 Item { // size controlled by width
     id: root_bareme
@@ -190,6 +192,43 @@ Item { // size controlled by width
             width: parent.width + 10
             height: parent.height
             radius: 4
+        }
+        onClicked: {
+            var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
+
+            if(combo.textAt(combo.currentIndex) === "Créer") {
+                try {
+                    db.transaction(function (tx) {
+                        tx.executeSql('CREATE TABLE IF NOT EXISTS baremes (id INTEGER PRIMARY KEY AUTOINCREMENT, operation TEXT, valeur INTEGER)');
+                        tx.executeSql('INSERT INTO baremes (operation, valeur) VALUES (?,?)', [input_operation.text, input_val.text]);
+                        print("creating element into table bareme")
+                    })
+                } catch (err) {
+                    console.log("Error creating table in database: " + err)
+                };
+                bareme.dataModel = Code.fillBaremes();
+            } // ================
+            if(combo.textAt(combo.currentIndex) === "Mettre à jour") {
+                try {
+                    db.transaction(function (tx) {
+                        tx.executeSql('UPDATE baremes SET valeur=? WHERE operation = ?', [input_val.text, input_operation.text]);
+                    })
+                } catch (error_update) {
+                    console.log("Error update table in database: " + error_update)
+                };
+                bareme.dataModel = Code.fillBaremes();
+            } // ===============
+            if(combo.textAt(combo.currentIndex) === "Supprimer") {
+                try {
+                    db.transaction(function (tx) {
+                        tx.executeSql('DELETE FROM baremes WHERE operation = ?', [input_operation.text]);
+                        print("Delete")
+                    })
+                } catch (error_delete) {
+                    console.log("Error deleting in database: " + error_delete)
+                };
+                bareme.dataModel = Code.fillBaremes();
+            }
         }
     }
 }

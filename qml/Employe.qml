@@ -1,5 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
+import QtQuick.LocalStorage 2.15
+import "script.js" as Code
 
 Item { // size controlled by width
     id: root_user
@@ -134,7 +136,7 @@ Item { // size controlled by width
 //        ScrollBar{}
 
     }
-    // ========================name====================================================
+    // ========================name==========================================================
     TextField {
         id: input_name
         placeholderText: "Names"
@@ -149,7 +151,7 @@ Item { // size controlled by width
         }
     }
 
-    // ========================telephone====================================================
+    // ========================telephone===================================================
     TextField {
         id: input_tel
         placeholderText: "Téléphone"
@@ -282,5 +284,44 @@ Item { // size controlled by width
             height: parent.height
             radius: 4
         }
+        onClicked: {
+            var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
+
+            if(combo.textAt(combo.currentIndex) === "Créer") {
+                try {
+                    db.transaction(function (tx) {
+                        tx.executeSql('CREATE TABLE IF NOT EXISTS employes (id INTEGER PRIMARY KEY AUTOINCREMENT, noms TEXT, tel TEXT, ville TEXT, naissance TEXT, cni TEXT, s_fixe INTEGER)');
+                        tx.executeSql('INSERT INTO employes (noms, tel, ville, naissance, cni, s_fixe) VALUES (?,?,?,?,?,?)', [input_name.text, input_tel.text, input_ville.text, input_nais.text, input_cni.text, input_salaire.text]);
+                    })
+                } catch (err) {
+                    console.log("Error creating table in database: " + err)
+                };
+                user.dataModel = Code.fillEmployes();
+            } // ================
+            if(combo.textAt(combo.currentIndex) === "Mettre à jour") {
+                try {
+                    db.transaction(function (tx) {
+
+                        tx.executeSql('UPDATE employes SET noms=?, tel=?, ville=?, naissance=?, s_fixe=? WHERE cni = ?', [input_name.text, input_tel.text, input_ville.text, input_nais.text, input_salaire.text, input_cni.text]);
+
+                    })
+                } catch (error_update) {
+                    console.log("Error update table in database: " + error_update)
+                };
+                user.dataModel = Code.fillEmployes();
+            } // ===============
+            if(combo.textAt(combo.currentIndex) === "Supprimer") {
+                try {
+                    db.transaction(function (tx) {
+                        tx.executeSql('DELETE FROM employes WHERE cni = ?', [input_cni.text]);
+                        print("Delete")
+                    })
+                } catch (error_delete) {
+                    console.log("Error deleting in database: " + error_delete)
+                };
+                user.dataModel = Code.fillEmployes();
+            }
+        }
+        // ============ en of onclicked =================
     }
 }

@@ -132,6 +132,7 @@ Item { // size controlled by width
         interactive: contentHeight > height
         clip: true
         model: dataModel
+//        highlightFollowsCurrentItem: true
 
         delegate: Item { // row
             width: root_point.width;  height: header.height
@@ -170,14 +171,6 @@ Item { // size controlled by width
                     root_point.clicked(row, rowData)
 
 
-                    var cursor = combo.currentIndex
-                    if(combo.textAt(cursor) === "Créer"){
-                        combo.incrementCurrentIndex();
-                    }
-                    if(combo.textAt(cursor) === "Supprimer"){
-                        combo.decrementCurrentIndex();
-                    }
-
                 }
             }
         }
@@ -194,7 +187,80 @@ Item { // size controlled by width
     }
 
     // ============================variable fixe====================================================================================
+    // ========================cni====================================================
+    ComboBox {
+        id: combo_operation
+        x: header.width * 1.04
+        y: root_point.height * 0.17
+        width: header.width * 0.2
+        model: ["Operation", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"]
+        background: Rectangle{
+            color: "transparent"
+        }
+    }
+    TextField {
+        id: id_quantite
+        placeholderText: "Quantité"
+        x: header.width * 1.04
+        y: root_point.height * 0.28
+        background: Rectangle {
+             implicitWidth: header.width * 0.2
+             implicitHeight: 40
+             radius: 3
+             color: id_quantite.enabled ? "transparent" : "#780000ff"
+             border.color: id_quantite.enabled ? "#780000ff" : "transparent"
+        }
+    }
+    TextField {
+        id: id_date
+        placeholderText: "Date"
+        x: header.width * 1.04
+        y: root_point.height * 0.39
+        background: Rectangle {
+             implicitWidth: header.width * 0.2
+             implicitHeight: 40
+             radius: 3
+             color: id_date.enabled ? "transparent" : "#780000ff"
+             border.color: id_date.enabled ? "#780000ff" : "transparent"
+        }
+    }
+    TextField {
+        id: id_observation
+        placeholderText: "Observation"
+        x: header.width * 1.04
+        y: root_point.height * 0.50
+        background: Rectangle {
+             implicitWidth: header.width * 0.2
+             implicitHeight: 40
+             radius: 3
+             color: id_observation.enabled ? "transparent" : "#780000ff"
+             border.color: id_observation.enabled ? "#780000ff" : "transparent"
+        }
+    }
+    Button {
+        id: confirmer_point
+        x: header.width * 1.13
+        y: root_point.height * 0.61
+        text: "Pointer"
+        contentItem: Text {
+            text: confirmer_point.text
+            color: confirmer_point.down ? "#17a81a" : "2c2c54"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            font.pointSize: 15
+        }
 
+        background: Rectangle {
+            color: "white"
+            border.color: "#780000ff"
+            width: parent.width + 10
+            height: parent.height
+            radius: 4
+        }
+    }
+
+    // =================================================================================================
     Text {
         id: variable_fixe
         text: "Variable fixe :"

@@ -6,6 +6,8 @@ import QtQuick.Extras 1.4
 import Qt3D.Core 2.0
 import QtMultimedia 5.3
 import QtGraphicalEffects 1.12
+import QtQuick.LocalStorage 2.15
+import "script.js" as Code
 
 Item {
     id: _leftview
@@ -31,18 +33,9 @@ Item {
         ]
 
         dataModel: {
-
-            bridge.load("read", "employes")
-            print(bridge.data1)
-            return bridge.data1
+            Code.fillEmployes();
         }
-            /*[
-            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
-            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
-            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
-            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
-            ['Jean-Claude',    '656502714', '2000', 'Yde', '87654321', '50000'],
-        ]*/
+
         onClicked: print('onClicked', row, JSON.stringify(rowData))
     }
 
@@ -58,15 +51,18 @@ Item {
             {text: "Valeur unitaire", width: 2/7},
         ]
 
-        dataModel: [
-            ['COUPE NGOUMOU',  '30'],
-            ['COUPE BAMENDA',  '30'],
-            ['COUPE EKOPTENTE',  '50'],
-            ['COUPE AKONO',  '50'],
-            ['RABATTAGE',  '100'],
-        ]
-        onClicked: print('onClicked', row, JSON.stringify(rowData))
+        dataModel: {
+            Code.fillBaremes();
+        }
 
+//            [
+//            ['COUPE NGOUMOU',  '30'],
+//            ['COUPE BAMENDA',  '30'],
+//            ['COUPE EKOPTENTE',  '50'],
+//            ['COUPE AKONO',  '50'],
+//            ['RABATTAGE',  '100'],
+//        ]
+        onClicked: print('onClicked', row, JSON.stringify(rowData))
     }
 
     Pointage {
@@ -78,9 +74,9 @@ Item {
         headerModel: [
             {text: "N°", width: 0.5/7},
             {text: "Date", width: 1/7},
-            {text: "Opérations", width: 1.5/7},
+            {text: "Opérations", width: 2/7},
             {text: "Qté", width: 0.5/7},
-            {text: "P.U", width: 1/7},
+            {text: "P.U", width: 0.5/7},
             {text: "Montant", width: 1/7},
             {text: "Observation", width: 1.5/7},
         ]
