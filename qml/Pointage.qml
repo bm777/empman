@@ -190,73 +190,81 @@ Item { // size controlled by width
     // ========================cni====================================================
     ComboBox {
         id: combo_operation
-        x: header.width * 1.04
+        x: header.width * 1.016
         y: root_point.height * 0.17
-        width: header.width * 0.2
+        width: root_point.width * 0.2405 //header.width * 0.2
         model: ["Operation", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"]
         background: Rectangle{
             color: "transparent"
+            border.color: "#780000ff"
+            height: 38
         }
     }
     TextField {
         id: id_quantite
         placeholderText: "Quantité"
-        x: header.width * 1.04
-        y: root_point.height * 0.28
+        x: header.width * 1.016
+        y: root_point.height * 0.25
         background: Rectangle {
-             implicitWidth: header.width * 0.2
+             implicitWidth: root_point.width * 0.2405 //header.width * 0.2
              implicitHeight: 40
              radius: 3
              color: id_quantite.enabled ? "transparent" : "#780000ff"
              border.color: id_quantite.enabled ? "#780000ff" : "transparent"
         }
     }
-    TextField {
-        id: id_date
-        placeholderText: "Date"
-        x: header.width * 1.04
-        y: root_point.height * 0.39
-        background: Rectangle {
-             implicitWidth: header.width * 0.2
-             implicitHeight: 40
-             radius: 3
-             color: id_date.enabled ? "transparent" : "#780000ff"
-             border.color: id_date.enabled ? "#780000ff" : "transparent"
+    DatePicker {
+        x: header.width * 1.016
+        y: root_point.height * 0.331
+        Component.onCompleted: set(new Date()) // today
+            onClicked: {
+                print('==onClicked', Qt.formatDate(date, 'M/d/yyyy'))
+        }
+        Rectangle {
+            anchors.fill: parent
+            color: "transparent"
+            border.color: "#780000ff"
         }
     }
     TextField {
         id: id_observation
         placeholderText: "Observation"
-        x: header.width * 1.04
-        y: root_point.height * 0.50
+        x: header.width * 1.016
+        y: root_point.height * 0.512
         background: Rectangle {
-             implicitWidth: header.width * 0.2
+             implicitWidth: root_point.width * 0.2405 //header.width * 0.2
              implicitHeight: 40
              radius: 3
              color: id_observation.enabled ? "transparent" : "#780000ff"
              border.color: id_observation.enabled ? "#780000ff" : "transparent"
         }
     }
-    Button {
+    Rectangle {
         id: confirmer_point
-        x: header.width * 1.13
-        y: root_point.height * 0.61
-        text: "Pointer"
-        contentItem: Text {
-            text: confirmer_point.text
-            color: confirmer_point.down ? "#17a81a" : "2c2c54"
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
+        x: header.width * 1.016
+        y: root_point.height * 0.59
+        color: "#380000ff"
+        border.color: "#780000ff"
+        width: root_point.width * 0.2405 //parent.width + 10
+        height: 40
+        radius: 4
+
+        Text {
+            id: inside_txt
+            text: "Pointer"
+//            color: inside_btn.down ? "#17a81a" : "2c2c54"
+            anchors.centerIn: confirmer_point
             elide: Text.ElideRight
             font.pointSize: 15
         }
 
-        background: Rectangle {
-            color: "white"
-            border.color: "#780000ff"
-            width: parent.width + 10
-            height: parent.height
-            radius: 4
+        MouseArea {
+            anchors.fill: confirmer_point
+            onClicked: {
+                confirmer_point.color = "#0000ff";
+                print("clicked", confirmer_point.color);
+            }
+            onExited: confirmer_point.color = "#380000ff"
         }
     }
 
