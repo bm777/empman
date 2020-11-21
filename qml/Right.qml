@@ -1,4 +1,6 @@
 import QtQuick 2.15
+import QtQuick.LocalStorage 2.15
+import "script.js" as Code
 
 Item {
     property string state_home: "OutMouse"
@@ -231,6 +233,7 @@ Item {
                     bareme.visible = false
                     pointage.visible = true
                     recap.visible = false
+//                    combo_name.dataModel = Code.fillNoms();
                 }
 
                 onExited: {
@@ -251,7 +254,6 @@ Item {
                     x: 70
                     y: 105
                     font.pointSize: 20
-
                 }
     }
     // ========================================================================

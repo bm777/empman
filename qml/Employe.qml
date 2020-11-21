@@ -258,8 +258,6 @@ Item { // size controlled by width
         y: root_user.height + input_salaire.height * 5 / 3
         model: ["Créer", "Mettre à jour", "Supprimer"]
 
-
-
     }
 
     // ============================confirmer=================================================

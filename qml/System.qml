@@ -81,7 +81,17 @@ Item {
             {text: "Observation", width: 1.5/7},
         ]
 
-        dataModel: [
+        dataModel: {
+            if(pointage.state_form) {
+                print("modification")
+//                return Code.fillPointages()
+            } else {
+                print("visualisation")
+                return Code.fillPointages()
+            }
+        }
+
+          /*[
             ['1',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
             ['2',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
             ['3',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
@@ -112,7 +122,7 @@ Item {
             ['28',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
             ['29',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
             ['30',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
-        ]
+        ]*/
         onClicked: print('onClicked', row, JSON.stringify(rowData))
 
     }

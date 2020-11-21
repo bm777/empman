@@ -1,5 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15
+import "script.js" as Code
+import QtQuick.LocalStorage 2.15
 
 Item { // size controlled by width
     id: root_point
@@ -12,18 +14,15 @@ Item { // size controlled by width
     property variant dataModel: [
 
     ]
+    property string string_date: ""
 
     signal clicked(int row, variant rowData);  //onClicked: print('onClicked', row, JSON.stringify(rowData))
 
 // private
     width: root.width * 0.65;  height: 600
     property real ratio: Math.sqrt(width * width + height * height)
-//    Rectangle {
-//        color: "red"
-//        width: root.width * 0.65
-////        x: root.width * 0.1
-//        height: root.height
-//    }
+    property bool state_form: checkBox.checked ? true : false
+
     // ===========================================================
     Text {
         id: point_text
@@ -46,16 +45,26 @@ Item { // size controlled by width
         x: name.x + name.width  + 30//+ input_salaire.width
         y: name.y
         width: 150
-        model: ["Jean-Claude", "Marie-Claude", "Anne-Claude", "Jeanne-Claude"]
+        model: {
+            print("noms:", Code.fillNoms());
+            return Code.fillNoms();
+        }
+
         background: Rectangle{
             color: "transparent"
         }
-
-
     }
+    CheckBox {
+        id: checkBox
+        y: - 82
+        x: root_point.width * 0.8
+        text: "Mode modification"
+    }
+
     // ==========
     Text {
         id: month
+        visible: !state_form
         text: "Mois :"
         y: - root_point.width * 0.04
         x: root_point.width - 280
@@ -64,6 +73,7 @@ Item { // size controlled by width
     }
     ComboBox {
         id: combo_month
+        visible: !state_form
         x: month.x + month.width  + 10//+ input_salaire.width
         y: month.y
         width: 100
@@ -75,6 +85,7 @@ Item { // size controlled by width
     }
     ComboBox {
         id: combo_year
+        visible: !state_form
         x: combo_month.x + combo_month.width  + 10//+ input_salaire.width
         y: month.y
         width: 100
@@ -82,8 +93,6 @@ Item { // size controlled by width
         background: Rectangle{
             color: "transparent"
         }
-
-
     }
 
     // ===========================================================
@@ -170,7 +179,6 @@ Item { // size controlled by width
                 onClicked:  {
                     root_point.clicked(row, rowData)
 
-
                 }
             }
         }
@@ -189,11 +197,12 @@ Item { // size controlled by width
     // ============================variable fixe====================================================================================
     // ========================cni====================================================
     ComboBox {
+        visible: state_form
         id: combo_operation
         x: header.width * 1.016
         y: root_point.height * 0.17
         width: root_point.width * 0.2405 //header.width * 0.2
-        model: ["Operation", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"]
+        model: Code.comboBaremes()
         background: Rectangle{
             color: "transparent"
             border.color: "#780000ff"
@@ -201,6 +210,7 @@ Item { // size controlled by width
         }
     }
     TextField {
+        visible: state_form
         id: id_quantite
         placeholderText: "Quantité"
         x: header.width * 1.016
@@ -214,11 +224,14 @@ Item { // size controlled by width
         }
     }
     DatePicker {
+        id: id_date
+        visible: state_form
         x: header.width * 1.016
         y: root_point.height * 0.331
         Component.onCompleted: set(new Date()) // today
             onClicked: {
-                print('==onClicked', Qt.formatDate(date, 'M/d/yyyy'))
+                root_point.string_date = Qt.formatDate(date, 'M/d/yyyy')
+                print('==onClicked', root_point.string_date)
         }
         Rectangle {
             anchors.fill: parent
@@ -227,6 +240,7 @@ Item { // size controlled by width
         }
     }
     TextField {
+        visible: state_form
         id: id_observation
         placeholderText: "Observation"
         x: header.width * 1.016
@@ -240,6 +254,7 @@ Item { // size controlled by width
         }
     }
     Rectangle {
+        visible: state_form
         id: confirmer_point
         x: header.width * 1.016
         y: root_point.height * 0.59
@@ -252,7 +267,6 @@ Item { // size controlled by width
         Text {
             id: inside_txt
             text: "Pointer"
-//            color: inside_btn.down ? "#17a81a" : "2c2c54"
             anchors.centerIn: confirmer_point
             elide: Text.ElideRight
             font.pointSize: 15
@@ -261,8 +275,38 @@ Item { // size controlled by width
         MouseArea {
             anchors.fill: confirmer_point
             onClicked: {
-                confirmer_point.color = "#0000ff";
-                print("clicked", confirmer_point.color);
+                var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
+
+
+                if(state_form) {
+                    var tmp = []
+                    try {
+                        db.transaction(function (tx) {
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS pointages (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                                                fk_employe INTEGER,
+                                                                                jour DATE,
+                                                                                fk_operation INTEGER,
+                                                                                quantite INTEGER,
+                                                                                prix INTEGER,
+                                                                                observation TEXT,
+                                                                                FOREIGN KEY (fk_employe) REFERENCES employes(id),
+                                                                                FOREIGN KEY (fk_operation) REFERENCES baremes(id))');
+
+                            var data_employe = Code.employe_to_id(combo_name.textAt(combo_name.currentIndex))
+                            var data_bareme = Code.bareme_to_id(combo_operation.textAt(combo_operation.currentIndex))
+                            var data_prix = Code.price_from_bareme(data_bareme)
+                            tmp = [data_employe, string_date, data_bareme, id_quantite.text, data_prix, id_observation.text]
+                            tx.executeSql('INSERT INTO pointages (fk_employe, jour, fk_operation, quantite, prix, observation)
+                                           VALUES (?,?,?,?,?,?)', tmp);
+                            print("creating element into table pointage")
+                        })
+                    } catch (err) {
+                        console.log("Error creating table in database: " + err)
+                    };
+                    pointage.dataModel = Code.fillPointages();
+                    print("==", tmp)
+                } // ================
+
             }
             onExited: confirmer_point.color = "#380000ff"
         }
