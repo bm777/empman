@@ -83,46 +83,12 @@ Item {
 
         dataModel: {
             if(pointage.state_form) {
-                print("modification")
-//                return Code.fillPointages()
+                return Code.fillPointages(pointage.string_name)
             } else {
-                print("visualisation")
-                return Code.fillPointages()
+                return Code.fillPointages(pointage.string_name)
             }
         }
 
-          /*[
-            ['1',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
-            ['2',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
-            ['3',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
-            ['4',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
-            ['5',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
-            ['6',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
-            ['7',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
-            ['8',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
-            ['9',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
-            ['10',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
-            ['11',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
-            ['12',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
-            ['13',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
-            ['14',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
-            ['15',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
-            ['16',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
-            ['17',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
-            ['18',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
-            ['19',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
-            ['20',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
-            ['21',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
-            ['22',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
-            ['23',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
-            ['24',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
-            ['25',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
-            ['26',    '2020-11-04', 'COUPE NGOUMOU', '4', '30', '120', ""],
-            ['27',    '656502714', 'COUPE BAMENDA', '10', '30', '300', ""],
-            ['28',    '656502714', 'COUPE BAMENDA', '50', '30', '1500', ""],
-            ['29',    '656502714', 'COUPE EKOPTENTE', '40', '50', '2000', ""],
-            ['30',    '656502714', 'COUPE EKOPTENTE', '20', '50', '1000', ""],
-        ]*/
         onClicked: print('onClicked', row, JSON.stringify(rowData))
 
     }

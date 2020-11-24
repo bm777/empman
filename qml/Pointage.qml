@@ -15,6 +15,8 @@ Item { // size controlled by width
 
     ]
     property string string_date: ""
+    property bool state_retenu: false
+    property bool state_avance: false
 
     signal clicked(int row, variant rowData);  //onClicked: print('onClicked', row, JSON.stringify(rowData))
 
@@ -22,6 +24,10 @@ Item { // size controlled by width
     width: root.width * 0.65;  height: 600
     property real ratio: Math.sqrt(width * width + height * height)
     property bool state_form: checkBox.checked ? true : false
+    property string string_name: {
+//        Code.fillPointages(combo_name.textAt(combo_name.currentIndex))
+        return combo_name.textAt(combo_name.currentIndex)
+    }
 
     // ===========================================================
     Text {
@@ -46,13 +52,19 @@ Item { // size controlled by width
         y: name.y
         width: 150
         model: {
-            print("noms:", Code.fillNoms());
+            if(checkBox.checked){
+                pointage.dataModel = Code.fillPointages(combo_name.currentText)
+            }else{
+                pointage.dataModel = Code.fillVisualisation(string_name, combo_month.currentText, combo_year.currentText)
+            }
+
             return Code.fillNoms();
         }
 
         background: Rectangle{
             color: "transparent"
         }
+
     }
     CheckBox {
         id: checkBox
@@ -81,6 +93,9 @@ Item { // size controlled by width
         background: Rectangle{
             color: "transparent"
         }
+//        onCurrentTextChanged: {
+//            pointage.dataModel = Code.fillVisualisation(string_name, combo_month.currentText, combo_year.currentText)
+//        }
 
     }
     ComboBox {
@@ -93,6 +108,10 @@ Item { // size controlled by width
         background: Rectangle{
             color: "transparent"
         }
+
+//        onCurrentTextChanged: {
+//            Code.fillVisualisation(string_name, combo_month.currentText, combo_year.currentText)
+//        }
     }
 
     // ===========================================================
@@ -231,7 +250,6 @@ Item { // size controlled by width
         Component.onCompleted: set(new Date()) // today
             onClicked: {
                 root_point.string_date = Qt.formatDate(date, 'M/d/yyyy')
-                print('==onClicked', root_point.string_date)
         }
         Rectangle {
             anchors.fill: parent
@@ -294,67 +312,161 @@ Item { // size controlled by width
 
                             var data_employe = Code.employe_to_id(combo_name.textAt(combo_name.currentIndex))
                             var data_bareme = Code.bareme_to_id(combo_operation.textAt(combo_operation.currentIndex))
-                            var data_prix = Code.price_from_bareme(data_bareme)
-                            tmp = [data_employe, string_date, data_bareme, id_quantite.text, data_prix, id_observation.text]
+                            var data_prix = Code.price_from_bareme(combo_operation.textAt(combo_operation.currentIndex))
+                            tmp = [data_employe[0], string_date, data_bareme[0], id_quantite.text, data_prix[0], id_observation.text]
                             tx.executeSql('INSERT INTO pointages (fk_employe, jour, fk_operation, quantite, prix, observation)
                                            VALUES (?,?,?,?,?,?)', tmp);
-                            print("creating element into table pointage")
                         })
                     } catch (err) {
                         console.log("Error creating table in database: " + err)
                     };
-                    pointage.dataModel = Code.fillPointages();
-                    print("==", tmp)
+
+                    pointage.dataModel = Code.fillPointages(string_name);
+//                    print("datamodel:", pointage.dataModel)
                 } // ================
 
             }
             onExited: confirmer_point.color = "#380000ff"
         }
     }
+    TextField {
+        visible: state_form
+        id: id_avance
+        placeholderText: "Avance du mois"
+        x: header.width * 1.016
+        y: root_point.height * 0.77
+        background: Rectangle {
+             implicitWidth: root_point.width * 0.2405 //header.width * 0.2
+             implicitHeight: 40
+             radius: 3
+             color: id_observation.enabled ? "transparent" : "#780000ff"
+             border.color: id_observation.enabled ? "#780000ff" : "transparent"
+        }
+    }
+    TextField {
+        visible: state_form
+        id: id_retenue
+
+        placeholderText: "Retenue du mois"
+        x: header.width * 1.016
+        y: root_point.height * 0.84
+        background: Rectangle {
+             implicitWidth: root_point.width * 0.2405 //header.width * 0.2
+             implicitHeight: 40
+             radius: 3
+             color: id_observation.enabled ? "transparent" : "#780000ff"
+             border.color: id_observation.enabled ? "#780000ff" : "transparent"
+        }
+    }
+    Rectangle {
+        visible: state_form
+        id: btn_retenu
+        x: header.width * 1.016
+        y: root_point.height * 0.91
+        color: "#380000ff"
+        border.color: "#780000ff"
+        width: root_point.width * 0.2405 //parent.width + 10
+        height: 40
+        radius: 4
+        Text {
+            id: content_retenu
+            text: "Sauvegarder"
+            anchors.centerIn: btn_retenu
+            elide: Text.ElideRight
+            font.pointSize: 15
+        }
+        MouseArea {
+            anchors.fill: btn_retenu
+            onClicked: {
+                var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
+                var tmp = []
+                var months = ["Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"]
+                var index_month = months.indexOf(combo_month.currentText) + 1
+                if (index_month < 10){
+                    index_month = "0"+index_month.toString()
+                }
+
+                try {
+                    db.transaction(function (tx) {
+                        tx.executeSql('CREATE TABLE IF NOT EXISTS retenues (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                                            fk_employe INTEGER,
+                                                                            mois DATE,
+                                                                            avance INTEGER,
+                                                                            retenue INTEGER,
+                                                                            FOREIGN KEY (fk_employe) REFERENCES employes(id))');
+
+                        var data_employe = Code.employe_to_id(combo_name.textAt(combo_name.currentIndex))
+                        var data_bareme = Code.bareme_to_id(combo_operation.textAt(combo_operation.currentIndex))
+                        var data_prix = Code.price_from_bareme(combo_operation.textAt(combo_operation.currentIndex))
+                        tmp = [data_employe[0], index_month+"/"+combo_year.currentText, id_avance.text, id_retenue.text]
+                        tx.executeSql('INSERT INTO retenues (fk_employe, mois, avance, retenue)
+                                       VALUES(?,?,?,?)', tmp);
+                    })
+                } catch (err) {
+                    console.log("Error creating or inserting on retenues table in database: " + err)
+                };
+                print("tmp", tmp)
+            }
+        }
+    }
 
     // =================================================================================================
     Text {
-        id: variable_fixe
-        text: "Variable fixe :"
+        id: salaire_variable
+        text: "Variable :"
         y:  root_point.height * 1.03
 //        x: root_point.width * 0.3
         color: "#880000ff"
         font.pointSize: root_point.width * 0.02
     }
     Text {
-        id: fixe
-        text: "35800"
+        id: variable
+        text: Code.variable(pointage.dataModel)
         y:  root_point.height * 1.025
         x: root_point.width * 0.18
         color: "black"
-//        font.bold: true
         font.pointSize: root_point.width * 0.025
     }
     // ============================variable fixe=================================================
 
     Text {
-        id: salaire_brute
-        text: "Salaire brute :"
-        y:  fixe.y + root_point.width * 0.08
-//        x: root_point.width * 0.3
+        id: salaire_fixe
+        text: "Fixe :"
+        y:  variable.y + root_point.width * 0.08
         color: "#880000ff"
         font.pointSize: root_point.width * 0.02
     }
     Text {
-        id: brute
-        text: "35800"
-        y:  salaire_brute.y - 3
+        id: fixe
+        text: Code.salaire_fixe(string_name)[0]
+        y:  salaire_fixe.y - 3
         x: root_point.width * 0.18
         color: "black"
 //        font.bold: true
         font.pointSize: root_point.width * 0.025
     }
-    // ============================variable fixe===================================================================================
+    // ============================== brute ======================================================
+    Text {
+        id: salaire_brute
+        text: "Brute:"
+        y: fixe.y + root_point.width * 0.08
+        color: "#800000ff"
+        font.pointSize: root_point.width * 0.02
+    }
+    Text {
+        id: brute
+        text: Code.brute(variable.text, fixe.text)
+        y: salaire_brute.y -3
+        x: root_point.width * 0.18
+        font.pointSize: root_point.width * 0.025
+    }
+
+    // ============================avance retenue=================================================
 
     Text {
-        id: avance
-        text: "Avance retenue :"
-        y:  variable_fixe.y
+        id: text_avance
+        text: "Avance:"
+        y:  salaire_variable.y
         x: root_point.width * 0.5
         color: "#880000ff"
         font.pointSize: root_point.width * 0.02
@@ -362,18 +474,18 @@ Item { // size controlled by width
     Text {
         id: val_avance
         text: "250"
-        y:  fixe.y
+        y:  variable.y
         x: root_point.width * 0.72
         color: "black"
 //        font.bold: true
         font.pointSize: root_point.width * 0.025
     }
-    // ============================variable fixe=========================================
+    // ============================retenue=========================================
 
     Text {
         id: retenue
-        text: "Total retenue :"
-        y:  salaire_brute.y
+        text: "Autre retenue :"
+        y:  salaire_fixe.y
         x: root_point.width * 0.5
         color: "#880000ff"
         font.pointSize: root_point.width * 0.02
@@ -381,18 +493,34 @@ Item { // size controlled by width
     Text {
         id: total_retenue
         text: "250"
-        y:  brute.y
+        y:  fixe.y
         x: root_point.width * 0.72
         color: "black"
 //        font.bold: true
         font.pointSize: root_point.width * 0.025
     }
-    // ============================net a payer===================================================================================
+    // ============================ total retenu ==================================
+    Text {
+        id: text_total_retenu
+        text: "Total retenue:"
+        y: salaire_brute.y
+        x: root_point.width * 0.5
+        color: "#800000ff"
+        font.pointSize: root_point.width * 0.02
+    }
+    Text {
+        id: val_total_retenu
+        text: Code.brute(total_retenue.text, val_avance.text)
+        y: brute.y
+        x: root_point.width * 0.72
+        font.pointSize: root_point.width * 0.025
+    }
+    // ============================net a payer======================================
 
     Text {
         id: net
         text: "Net A Payer :"
-        y:  salaire_brute.y
+        y:  salaire_fixe.y
         x: root_point.width * 0.8
         color: "#880000ff"
         font.underline: true
@@ -401,8 +529,8 @@ Item { // size controlled by width
     }
     Text {
         id: val_net
-        text: "36050"
-        y:  brute.y
+        text: Code.net(brute.text, val_total_retenu.text)
+        y:  fixe.y
         x: root_point.width * 0.97
         color: "black"
         font.bold: true
@@ -417,9 +545,59 @@ Item { // size controlled by width
         anchors.fill: total_retenue
         color: "#505f27cd"
         radius: 3
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            Timer {
+                id: timer
+                interval: 400
+                onTriggered: print("single click")
+            }
+            onClicked: {
+                if(mouse.button == Qt.LeftButton){
+                    if(timer.running){
+                        print('double clicked')
+                        id_avance.text = val_avance.text
+                        id_retenue.text = total_retenue.text
+                        timer.stop()
+                    } else
+                        timer.restart()
+                }
+            }
+        }
     }
     Rectangle {
         anchors.fill: val_avance
+        color: "#505f27cd"
+        radius: 3
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            Timer {
+                id: timer2
+                interval: 400
+                onTriggered: print("single click")
+            }
+            onClicked: {
+                if(mouse.button == Qt.LeftButton){
+                    if(timer2.running){
+                        print('double clicked')
+                        id_avance.text = val_avance.text
+                        id_retenue.text = total_retenue.text
+                        timer2.stop()
+                    } else
+                        timer2.restart()
+                }
+            }
+        }
+    }
+    Rectangle {
+        anchors.fill: fixe
+        color: "#505f27cd"
+        radius: 3
+    }
+    Rectangle {
+        anchors.fill: variable
         color: "#505f27cd"
         radius: 3
     }
@@ -429,7 +607,7 @@ Item { // size controlled by width
         radius: 3
     }
     Rectangle {
-        anchors.fill: fixe
+        anchors.fill: val_total_retenu
         color: "#505f27cd"
         radius: 3
     }
