@@ -17,6 +17,7 @@ Item { // size controlled by width
     property string string_date: ""
     property bool state_retenu: false
     property bool state_avance: false
+    property string _id: ""
 
     signal clicked(int row, variant rowData);  //onClicked: print('onClicked', row, JSON.stringify(rowData))
 
@@ -196,6 +197,14 @@ Item { // size controlled by width
                 anchors.fill: parent
 
                 onClicked:  {
+                    var index = combo_operation.currentIndex
+                    _id = rowData[0]
+                    combo_operation.currentIndex = combo_operation.find(rowData[2])
+                    id_quantite.text = rowData[3]
+                    id_observation.text = rowData[6]
+                    id_date.selectedDate = new Date(rowData[1])
+                    inside_txt.text = "Mise à Jour"
+                    print(id_date.selectedDate)
                     root_point.clicked(row, rowData)
 
                 }
@@ -206,7 +215,7 @@ Item { // size controlled by width
 //        ScrollBar{}
 
     }
-    Rectangle                                                                                                       {
+    Rectangle {
         width: root_point.width; height: root_point.height - 50
         y: 50
         color: "transparent"
@@ -244,7 +253,11 @@ Item { // size controlled by width
     }
     DatePicker {
         id: id_date
-        visible: state_form
+        visible: {
+            root_point.string_date = Qt.formatDate(id_date.selectedDate, 'M/d/yyyy')
+            return state_form
+        }
+
         x: header.width * 1.016
         y: root_point.height * 0.331
         Component.onCompleted: set(new Date()) // today
@@ -278,7 +291,7 @@ Item { // size controlled by width
         y: root_point.height * 0.59
         color: "#380000ff"
         border.color: "#780000ff"
-        width: root_point.width * 0.2405 //parent.width + 10
+        width: root_point.width * 0.15 //parent.width + 10
         height: 40
         radius: 4
 
@@ -316,12 +329,22 @@ Item { // size controlled by width
                             tmp = [data_employe[0], string_date, data_bareme[0], id_quantite.text, data_prix[0], id_observation.text]
                             tx.executeSql('INSERT INTO pointages (fk_employe, jour, fk_operation, quantite, prix, observation)
                                            VALUES (?,?,?,?,?,?)', tmp);
+
+                            if(inside_txt.text == "Mise à Jour"){
+                                print('inside update')
+                                tx.executeSql('UPDATE pointages
+                                               SET jour=?, fk_operation=?, quantite=?, observation=?, fk_employe=?
+                                               WHERE id=?', [string_date, data_bareme[0], id_quantite.text, id_observation.text, data_employe[0], parseInt(_id)])
+                                inside_txt.text = "Pointer"
+
+                            }
                         })
                     } catch (err) {
                         console.log("Error creating table in database: " + err)
                     };
 
                     pointage.dataModel = Code.fillPointages(string_name);
+                    combo_operation.model = Code.comboBaremes()
 //                    print("datamodel:", pointage.dataModel)
                 } // ================
 
@@ -329,6 +352,51 @@ Item { // size controlled by width
             onExited: confirmer_point.color = "#380000ff"
         }
     }
+    Rectangle {
+        visible: state_form
+        id: sup_point
+        x: header.width * 1.18
+        y: root_point.height * 0.59
+        color: "#080000ff"
+        border.color: "#780000ff"
+        width: root_point.width * 0.075 //parent.width + 10
+        height: 40
+        radius: 4
+        Text {
+//            id: inside_
+            text: "x"
+            color: "red"
+            anchors.centerIn: sup_point
+            elide: Text.ElideRight
+            font.pointSize: 25
+        }
+        MouseArea {
+            anchors.fill: sup_point
+            onEntered: {
+                sup_point.color = "#78ff0000"
+            }
+            onExited: {
+                sup_point.color = "#080000ff"
+            }
+            onClicked: {
+                var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
+                try {
+                    db.transaction(function (tx) {
+                    var data_employe = Code.employe_to_id(combo_name.textAt(combo_name.currentIndex))
+                    tx.executeSql('DELETE FROM pointages
+                                   WHERE fk_employe=?
+                                   AND SUBSTR(mois, 1,2)=?
+                                   AND SUBSTR(mois, 7, 10)=?', [id_avance.text, id_retenue.text, data_employe[0],  string_date.slice(0,2), string_date.slice(6,10)]);
+                    print("executed:", [id_avance.text, id_retenue.text, data_employe[0]])
+                });
+
+                } catch (e) {
+                    print('error while deleting pointage tble')
+                }
+            }
+        }
+    }
+
     TextField {
         visible: state_form
         id: id_avance
@@ -365,12 +433,12 @@ Item { // size controlled by width
         y: root_point.height * 0.91
         color: "#380000ff"
         border.color: "#780000ff"
-        width: root_point.width * 0.2405 //parent.width + 10
+        width: root_point.width * 0.15 //parent.width + 10
         height: 40
         radius: 4
         Text {
             id: content_retenu
-            text: "Sauvegarder"
+            text: "Enreg."
             anchors.centerIn: btn_retenu
             elide: Text.ElideRight
             font.pointSize: 15
@@ -384,7 +452,7 @@ Item { // size controlled by width
                 var index_month = months.indexOf(combo_month.currentText) + 1
                 if (index_month < 10){
                     index_month = "0"+index_month.toString()
-                }
+                } var test = ""
 
                 try {
                     db.transaction(function (tx) {
@@ -395,17 +463,75 @@ Item { // size controlled by width
                                                                             retenue INTEGER,
                                                                             FOREIGN KEY (fk_employe) REFERENCES employes(id))');
 
-                        var data_employe = Code.employe_to_id(combo_name.textAt(combo_name.currentIndex))
+                        var data_employe = Code.employe_to_id(combo_name.textAt(combo_name.currentIndex))[0]
                         var data_bareme = Code.bareme_to_id(combo_operation.textAt(combo_operation.currentIndex))
                         var data_prix = Code.price_from_bareme(combo_operation.textAt(combo_operation.currentIndex))
-                        tmp = [data_employe[0], index_month+"/"+combo_year.currentText, id_avance.text, id_retenue.text]
-                        tx.executeSql('INSERT INTO retenues (fk_employe, mois, avance, retenue)
-                                       VALUES(?,?,?,?)', tmp);
+                        tmp = [data_employe[0], string_date, id_avance.text, id_retenue.text]
+                        test = tx.executeSql('SELECT mois
+                                              FROM retenues
+                                              WHERE SUBSTR(mois, 1, 2)=?
+                                              AND SUBSTR(mois, 7, 10)=?
+                                              AND fk_employe=?', [string_date.slice(0, 2), string_date.slice(6, 10), data_employe]);
+
+                        if(test.rows.length == 0){
+                            print("length:", test.rows.length)
+                            tx.executeSql('INSERT INTO retenues (fk_employe, mois, avance, retenue)
+                                           VALUES(?,?,?,?)', tmp);
+                        } else {
+
+                        }
+                    print("tmp", [string_date.slice(0, 2), string_date.slice(6, 10), data_employe])
                     })
                 } catch (err) {
                     console.log("Error creating or inserting on retenues table in database: " + err)
                 };
-                print("tmp", tmp)
+
+            }
+        }
+    }
+    Rectangle {
+        visible: state_form
+        id: ar
+        x: header.width * 1.17
+        y: root_point.height * 0.91
+        color: "#080000ff"
+        border.color: "#780000ff"
+        width: root_point.width * 0.085 //parent.width + 10
+        height: 40
+        radius: 4
+        Text {
+            id: text_inside_ar
+            text: "M.à.J"
+            color: "red"
+            anchors.centerIn: ar
+            elide: Text.ElideRight
+            font.pointSize: 18
+        }
+        MouseArea {
+            anchors.fill: ar
+            onClicked: {
+                var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
+                try {
+                    db.transaction(function (tx) {
+                    var data_employe = Code.employe_to_id(combo_name.textAt(combo_name.currentIndex))
+                    tx.executeSql('UPDATE retenues SET avance=?, retenue=?
+                                   WHERE fk_employe=?
+                                   AND SUBSTR(mois, 1,2)=?
+                                   AND SUBSTR(mois, 7, 10)=?', [id_avance.text, id_retenue.text, data_employe[0],  string_date.slice(0,2), string_date.slice(6,10)]);
+                    print("executed:", [id_avance.text, id_retenue.text, data_employe[0]])
+                });
+
+                } catch (e) {
+                    print('error while updating retenues tble')
+                }
+
+            }
+
+            onEntered: {
+                ar.color = "#78ff0000"
+            }
+            onExited: {
+                ar.color = "#080000ff"
             }
         }
     }
@@ -559,6 +685,7 @@ Item { // size controlled by width
                         print('double clicked')
                         id_avance.text = val_avance.text
                         id_retenue.text = total_retenue.text
+//                        inside_txt.text = "Mise à Jour"
                         timer.stop()
                     } else
                         timer.restart()

@@ -234,6 +234,7 @@ Item {
                     pointage.visible = true
                     recap.visible = false
 //                    combo_name.dataModel = Code.fillNoms();
+
                 }
 
                 onExited: {

@@ -13,6 +13,7 @@ ListView {
 
  // private
     property date selectedDate: new Date()
+//    property string _day: value
 
     width: root_point.width * 0.2405 // {print("==",root_point.width * 0.2405); return 200}
     height: 100 // default size
