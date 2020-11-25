@@ -161,38 +161,38 @@ Item { // size controlled by width
              implicitWidth: header.width * 1 / 7
              implicitHeight: 40
              radius: 3
-             color: input_name.enabled ? "transparent" : "#780000ff"
-             border.color: input_name.enabled ? "#780000ff" : "transparent"
+             color: input_tel.enabled ? "transparent" : "#780000ff"
+             border.color: input_tel.enabled ? "#780000ff" : "transparent"
         }
     }
 
     // ========================naissance====================================================
     TextField {
-        id: input_nais
-        placeholderText: "Naissance"
+        id: input_ville
+        placeholderText: "Ville"
         x: input_tel.x + input_tel.width
         y: root_user.height
         background: Rectangle {
              implicitWidth: header.width * 1 / 7
              implicitHeight: 40
              radius: 3
-             color: input_name.enabled ? "transparent" : "#780000ff"
-             border.color: input_name.enabled ? "#780000ff" : "transparent"
+             color: input_ville.enabled ? "transparent" : "#780000ff"
+             border.color: input_ville.enabled ? "#780000ff" : "transparent"
         }
     }
 
     // ========================ville====================================================
     TextField {
-        id: input_ville
-        placeholderText: "Ville"
-        x: input_nais.x + input_nais.width
+        id: input_nais
+        placeholderText: "Naissance"
+        x: input_ville.x + input_ville.width
         y: root_user.height
         background: Rectangle {
              implicitWidth: header.width * 1 / 7
              implicitHeight: 40
              radius: 3
-             color: input_name.enabled ? "transparent" : "#780000ff"
-             border.color: input_name.enabled ? "#780000ff" : "transparent"
+             color: input_nais.enabled ? "transparent" : "#780000ff"
+             border.color: input_nais.enabled ? "#780000ff" : "transparent"
         }
     }
 
@@ -200,14 +200,14 @@ Item { // size controlled by width
     TextField {
         id: input_cni
         placeholderText: "C.N.I"
-        x: input_ville.x + input_ville.width
+        x: input_nais.x + input_nais.width
         y: root_user.height
         background: Rectangle {
              implicitWidth: header.width * 1 / 7
              implicitHeight: 40
              radius: 3
-             color: input_name.enabled ? "transparent" : "#780000ff"
-             border.color: input_name.enabled ? "#780000ff" : "transparent"
+             color: input_cni.enabled ? "transparent" : "#780000ff"
+             border.color: input_cni.enabled ? "#780000ff" : "transparent"
         }
     }
 
@@ -222,8 +222,8 @@ Item { // size controlled by width
              implicitWidth: header.width * 1 / 7
              implicitHeight: 40
              radius: 3
-             color: input_name.enabled ? "transparent" : "#780000ff"
-             border.color: input_name.enabled ? "#780000ff" : "transparent"
+             color: input_salaire.enabled ? "transparent" : "#780000ff"
+             border.color: input_salaire.enabled ? "#780000ff" : "transparent"
         }
     }
 

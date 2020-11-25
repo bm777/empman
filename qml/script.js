@@ -114,6 +114,44 @@ function fillPointages(noms) {
     return list_pointages;
 }
 // ========================================================================================================
+// ========================================================================================================
+function fillStatistic(mois, annee) {
+    var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
+    var employes = "";
+    var months = ["Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"]
+    var index_month = months.indexOf(mois) + 1
+    var list_stat = [];
+    var pt = []
+    var tmp = 0
+    var somme = 0
+    try {
+        db.transaction(function (tx) {
+            employes = tx.executeSql('SELECT noms, s_fixe FROM employes');
+
+            for (var i = 0; i < employes.rows.length; i++) {
+                    pt = fillVisualisation(employes.rows.item(i).noms, mois, annee)
+
+                    for(var j=0; j<pt.length; j++){
+                        tmp += pt[j][5]
+//                        print("debug:: ",employes.rows.item(i).noms, pt[j][5])
+                    }
+
+                    somme = employes.rows.item(i).s_fixe + tmp
+                    var a = avance(employes.rows.item(i).noms, mois, annee)[0]
+                    var r = avance(employes.rows.item(i).noms, mois, annee)[1]
+                    print("debug: r=", r)
+                    list_stat.push([i, employes.rows.item(i).noms, employes.rows.item(i).s_fixe, tmp, somme, parseInt(a), parseInt(r), parseInt(a)+parseInt(r), parseInt(somme) - parseInt(a)-parseInt(r)])
+               }
+        })
+//        print(index_month, annee)
+//        print(list_stat)
+    } catch (err) {
+        console.log("Error while filling recap model in database: " + err)
+    };
+    return list_stat;
+}
+// ========================================================================================================
+// ========================================================================================================
 function fillVisualisation(noms, mois, annee) {
     var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
     var result = "";
@@ -161,7 +199,23 @@ function employe_to_id(noms) {
     };
     return list_id;
 }
-
+// ========================================================================================================
+function id_to_employe(id) {
+    var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
+    var result = "";
+    var list_id = [];
+    try {
+        db.transaction(function (tx) {
+            result = tx.executeSql('SELECT noms FROM employes WHERE id=?', [id]);
+            for (var i = 0; i < result.rows.length; i++) {
+                list_id.push(result.rows.item(i).noms)
+               }
+        })
+    } catch (err) {
+        console.log("Error while updating table in database: " + err)
+    };
+    return list_id;
+}
 // ========================================================================================================
 function bareme_to_id(operation) {
     var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
@@ -205,8 +259,44 @@ function variable(pointages){
     for(var i=0; i <tmp.length; i++){
         total += tmp[i][5]
     }
-    print("total: ", total)
+
     return total
+}
+function avance(noms, mois, annee){
+    var db = LocalStorage.openDatabaseSync("jc", "", "Employe management", 1000000);
+    var result = "";
+    var months = ["Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"]
+    var index_month = months.indexOf(mois) + 1
+    if(index_month < 10){
+        index_month = "0"+index_month
+    }
+
+    var list_avance = [];
+    try {
+        db.transaction(function (tx) {
+            var data_employe = Code.employe_to_id(noms)[0]
+            result = tx.executeSql("SELECT avance, mois, retenue FROM retenues WHERE fk_employe=?", [data_employe]);
+//            result = tx.executeSql('SELECT retenue FROM retenues');
+            for (var i = 0; i < result.rows.length; i++) {
+                list_avance.push([result.rows.item(i).avance, result.rows.item(i).mois, result.rows.item(i).retenue])
+               }
+        })
+    } catch (err) {
+        console.log("Error while selecting avance from pointage and retenues table in database: " + err)
+    };
+    if (list_avance.length==0){
+        return [0, 0]
+    }else{
+        for(var i=0; i<list_avance.length; i++){
+            var tmp = list_avance[i][1]
+            if(tmp.slice(0,2) == index_month && tmp.slice(6,10) == annee){
+                var final =  [list_avance[i][0], list_avance[i][2]]
+            }
+        }
+        return final
+    }
+
+//    return list_avance
 }
 
 function brute(val1, val2){

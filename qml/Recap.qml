@@ -12,6 +12,12 @@ Item { // size controlled by width
     property variant dataModel: [
 
     ]
+    property string string_mois: {
+        return combo_month.textAt(combo_month.currentIndex)
+    }
+    property string string_annee: {
+        return combo_year.textAt(combo_year.currentIndex)
+    }
 
     signal clicked(int row, variant rowData);  //onClicked: print('onClicked', row, JSON.stringify(rowData))
 
@@ -151,13 +157,7 @@ Item { // size controlled by width
                 onClicked:  {
                     root_recap.clicked(row, rowData)
 
-                    var cursor = combo.currentIndex
-                    if(combo.textAt(cursor) === "Créer"){
-                        combo.incrementCurrentIndex();
-                    }
-                    if(combo.textAt(cursor) === "Supprimer"){
-                        combo.decrementCurrentIndex();
-                    }
+
 
                 }
             }

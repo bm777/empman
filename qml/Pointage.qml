@@ -26,9 +26,9 @@ Item { // size controlled by width
     property real ratio: Math.sqrt(width * width + height * height)
     property bool state_form: checkBox.checked ? true : false
     property string string_name: {
-//        Code.fillPointages(combo_name.textAt(combo_name.currentIndex))
         return combo_name.textAt(combo_name.currentIndex)
     }
+
 
     // ===========================================================
     Text {
@@ -327,8 +327,7 @@ Item { // size controlled by width
                             var data_bareme = Code.bareme_to_id(combo_operation.textAt(combo_operation.currentIndex))
                             var data_prix = Code.price_from_bareme(combo_operation.textAt(combo_operation.currentIndex))
                             tmp = [data_employe[0], string_date, data_bareme[0], id_quantite.text, data_prix[0], id_observation.text]
-                            tx.executeSql('INSERT INTO pointages (fk_employe, jour, fk_operation, quantite, prix, observation)
-                                           VALUES (?,?,?,?,?,?)', tmp);
+
 
                             if(inside_txt.text == "Mise à Jour"){
                                 print('inside update')
@@ -337,6 +336,11 @@ Item { // size controlled by width
                                                WHERE id=?', [string_date, data_bareme[0], id_quantite.text, id_observation.text, data_employe[0], parseInt(_id)])
                                 inside_txt.text = "Pointer"
 
+                            }else{
+                                tx.executeSql('INSERT INTO pointages (fk_employe, jour, fk_operation, quantite, prix, observation)
+                                               VALUES (?,?,?,?,?,?)', tmp);
+                                tx.executeSql('INSERT INTO retenues (fk_employe, mois, avance, retenue)
+                                               VALUES(?,?,?,?)', [data_employe[0], string_date, id_avance.text=="" ? 0 : id_avance.text, id_retenue.text=="" ? 0 : id_retenue.text]);
                             }
                         })
                     } catch (err) {
@@ -384,10 +388,8 @@ Item { // size controlled by width
                     db.transaction(function (tx) {
                     var data_employe = Code.employe_to_id(combo_name.textAt(combo_name.currentIndex))
                     tx.executeSql('DELETE FROM pointages
-                                   WHERE fk_employe=?
-                                   AND SUBSTR(mois, 1,2)=?
-                                   AND SUBSTR(mois, 7, 10)=?', [id_avance.text, id_retenue.text, data_employe[0],  string_date.slice(0,2), string_date.slice(6,10)]);
-                    print("executed:", [id_avance.text, id_retenue.text, data_employe[0]])
+                                   WHERE id=?', [_id]);
+                    pointage.dataModel = Code.fillPointages(string_name)
                 });
 
                 } catch (e) {
@@ -466,7 +468,7 @@ Item { // size controlled by width
                         var data_employe = Code.employe_to_id(combo_name.textAt(combo_name.currentIndex))[0]
                         var data_bareme = Code.bareme_to_id(combo_operation.textAt(combo_operation.currentIndex))
                         var data_prix = Code.price_from_bareme(combo_operation.textAt(combo_operation.currentIndex))
-                        tmp = [data_employe[0], string_date, id_avance.text, id_retenue.text]
+                        tmp = [data_employe, string_date, id_avance.text, id_retenue.text]
                         test = tx.executeSql('SELECT mois
                                               FROM retenues
                                               WHERE SUBSTR(mois, 1, 2)=?
@@ -477,10 +479,12 @@ Item { // size controlled by width
                             print("length:", test.rows.length)
                             tx.executeSql('INSERT INTO retenues (fk_employe, mois, avance, retenue)
                                            VALUES(?,?,?,?)', tmp);
+                            total_retenue.text = Code.avance(string_name, combo_month.currentText, combo_year.currentText)[1]
+                            val_avance = Code.avance(string_name, combo_month.currentText, combo_year.currentText)[0]
                         } else {
 
                         }
-                    print("tmp", [string_date.slice(0, 2), string_date.slice(6, 10), data_employe])
+                    print("tmp", tmp)
                     })
                 } catch (err) {
                     console.log("Error creating or inserting on retenues table in database: " + err)
@@ -599,7 +603,7 @@ Item { // size controlled by width
     }
     Text {
         id: val_avance
-        text: "250"
+        text: Code.avance(string_name, combo_month.currentText, combo_year.currentText)[0]
         y:  variable.y
         x: root_point.width * 0.72
         color: "black"
@@ -618,7 +622,7 @@ Item { // size controlled by width
     }
     Text {
         id: total_retenue
-        text: "250"
+        text: Code.avance(string_name, combo_month.currentText, combo_year.currentText)[1]
         y:  fixe.y
         x: root_point.width * 0.72
         color: "black"

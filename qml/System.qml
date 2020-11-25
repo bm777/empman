@@ -26,8 +26,8 @@ Item {
         headerModel: [
             {text: "Noms", width: 2/7},
             {text: "Téléphone", width: 1/7},
-            {text: "Naissance", width: 1/7},
             {text: "Ville", width: 1/7},
+            {text: "Naissance", width: 1/7},
             {text: "c.n.i", width: 1/7},
             {text: "Salaire fixe", width: 1/7},
         ]
@@ -111,18 +111,11 @@ Item {
 //            {text: "Obs", width: 0.5/10},
         ]
 
-        dataModel: [
-            ['1',    'Jean-Claude', '35800', '0', '0', '0', "250", "250", "35550"],
-            ['2',    'Marie-Claude', '45000', '0', '0', '0', "250", "250", "44750"],
-            ['3',    'Jean-Claude', '35800', '0', '0', '0', "250", "250", "35550"],
-            ['4',    'Marie-Claude', '45000', '0', '0', '0', "250", "250", "44750"],
-            ['5',    'Jean-Claude', '35800', '0', '0', '0', "250", "250", "35550"],
-            ['6',    'Marie-Claude', '45000', '0', '0', '0', "250", "250", "44750"],
-            ['7',    'Jean-Claude', '35800', '0', '0', '0', "250", "250", "35550"],
-            ['8',    'Marie-Claude', '45000', '0', '0', '0', "250", "250", "44750"],
+        dataModel: {
+            return Code.fillStatistic(recap.string_mois, recap.string_annee)
 
+        }
 
-        ]
         onClicked: print('onClicked', row, JSON.stringify(rowData))
 
     }
