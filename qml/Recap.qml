@@ -176,7 +176,15 @@ Item { // size controlled by width
      // ============================variable fixe===================
     Text {
         id: text_fixe
-        text: "250000"
+        text: {
+            var somme = 0
+            var tmp = recap.dataModel;
+            for(var i=0; i<tmp.length; i++){
+                somme += tmp[i][2]
+            }
+            return somme
+        }
+
         color: "black"
         y: root_recap.height + 50
         x: header.width * 0.26
@@ -184,7 +192,14 @@ Item { // size controlled by width
     }
     Text {
         id: text_variable
-        text: "2100"
+        text: {
+            var somme = 0
+            var tmp = recap.dataModel;
+            for(var i=0; i<tmp.length; i++){
+                somme += tmp[i][3]
+            }
+            return somme
+        }
         color: "black"
         y: root_recap.height + 50
         x: header.width * 0.37
@@ -192,7 +207,14 @@ Item { // size controlled by width
     }
     Text {
         id: text_salaire
-        text: "2100"
+        text: {
+            var somme = 0
+            var tmp = recap.dataModel;
+            for(var i=0; i<tmp.length; i++){
+                somme += tmp[i][4]
+            }
+            return somme
+        }
         color: "black"
         y: root_recap.height + 50
         x: header.width * 0.465
@@ -200,7 +222,14 @@ Item { // size controlled by width
     }
     Text {
         id: text_avance
-        text: "2100"
+        text: {
+            var somme = 0
+            var tmp = recap.dataModel;
+            for(var i=0; i<tmp.length; i++){
+                somme += tmp[i][5]
+            }
+            return somme
+        }
         color: "black"
         y: root_recap.height + 50
         x: header.width * 0.565
@@ -208,7 +237,14 @@ Item { // size controlled by width
     }
     Text {
         id: text_retenue
-        text: "250"
+        text: {
+            var somme = 0
+            var tmp = recap.dataModel;
+            for(var i=0; i<tmp.length; i++){
+                somme += tmp[i][6]
+            }
+            return somme
+        }
         color: "black"
         y: root_recap.height + 50
         x: header.width * 0.665
@@ -216,7 +252,14 @@ Item { // size controlled by width
     }
     Text {
         id: text_total_retenue
-        text: "21000"
+        text: {
+            var somme = 0
+            var tmp = recap.dataModel;
+            for(var i=0; i<tmp.length; i++){
+                somme += tmp[i][7]
+            }
+            return somme
+        }
         color: "black"
         y: root_recap.height + 50
         x: header.width * 0.765
@@ -224,7 +267,14 @@ Item { // size controlled by width
     }
     Text {
         id: text_net
-        text: "210000"
+        text: {
+            var somme = 0
+            var tmp = recap.dataModel;
+            for(var i=0; i<tmp.length; i++){
+                somme += tmp[i][8]
+            }
+            return somme
+        }
         color: "black"
         y: root_recap.height + 50
         x: header.width * 0.865
